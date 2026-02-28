@@ -1,6 +1,6 @@
 package com.Project.Leaning.LearningRESTAPIs.controller;
 
-import com.Project.Leaning.LearningRESTAPIs.dto.AddStudentRequestDto;
+import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.StudentDto;
 import com.Project.Leaning.LearningRESTAPIs.service.StudentService;
 import jakarta.validation.Valid;
@@ -29,10 +29,10 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getStudentByID(id));
     }
 
-    @PostMapping
-    public ResponseEntity<StudentDto> createNewStudent(@RequestBody @Valid AddStudentRequestDto addStudentRequestDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createNewStudent(addStudentRequestDto));
-    }
+//    @PostMapping
+//    public ResponseEntity<StudentDto> createNewStudent(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
+//    return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createNewStudent(registerRequestDto));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAStudent(@PathVariable Long id){
@@ -41,8 +41,8 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody @Valid AddStudentRequestDto addStudentRequestDto){
-        return ResponseEntity.ok(studentService.updateStudent(id, addStudentRequestDto));
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody @Valid RegisterRequestDto registerRequestDto){
+        return ResponseEntity.ok(studentService.updateStudent(id, registerRequestDto));
     }
 
     @PatchMapping("/{id}")

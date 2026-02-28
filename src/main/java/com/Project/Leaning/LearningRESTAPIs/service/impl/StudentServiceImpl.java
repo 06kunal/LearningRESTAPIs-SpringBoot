@@ -1,19 +1,18 @@
 package com.Project.Leaning.LearningRESTAPIs.service.impl;
 
-import com.Project.Leaning.LearningRESTAPIs.dto.AddStudentRequestDto;
+import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.StudentDto;
 import com.Project.Leaning.LearningRESTAPIs.entity.Student;
+import com.Project.Leaning.LearningRESTAPIs.enums.Role;
 import com.Project.Leaning.LearningRESTAPIs.repository.StudentRepository;
 import com.Project.Leaning.LearningRESTAPIs.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,26 +44,33 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentDto.class);
     }
 
-    @Override
-    public StudentDto createNewStudent(AddStudentRequestDto addStudentRequestDto) {
-        Student newStudent = modelMapper.map(addStudentRequestDto, Student.class);
-        Student student = studentRepository.save(newStudent);
-        return modelMapper.map(student, StudentDto.class);
-    }
+    //Registering a new student
+//    @Override
+//    public StudentDto createNewStudent(RegisterRequestDto registerRequestDto) {
+//        Student newStudent = modelMapper.map(registerRequestDto, Student.class);
+//
+//        newStudent.setRole(Role.STUDENT);
+//        newStudent.setCreatedAt(LocalDateTime.now());
+//        newStudent.setActive(true);
+//
+//
+//        Student student = studentRepository.save(newStudent);
+//        return modelMapper.map(student, StudentDto.class);
+//    }
 
     @Override
     public void deleteStudentById(Long id) {
 
         if(!studentRepository.existsById(id)){
-            throw new IllegalArgumentException("Student doesn not exist with ID: "+id);
+            throw new IllegalArgumentException("Student does not exist with ID: "+id);
         }
         studentRepository.deleteById(id);
     }
 
     @Override
-    public StudentDto updateStudent(Long id, AddStudentRequestDto addStudentRequestDto) {
+    public StudentDto updateStudent(Long id, RegisterRequestDto registerRequestDto) {
         Student student =  studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Student not found with ID: "+id));
-        modelMapper.map(addStudentRequestDto, student);
+        modelMapper.map(registerRequestDto, student);
 
         student = studentRepository.save(student);
         return modelMapper.map(student, StudentDto.class);

@@ -1,6 +1,6 @@
 package com.Project.Leaning.LearningRESTAPIs.service;
 
-import com.Project.Leaning.LearningRESTAPIs.dto.AddStudentRequestDto;
+import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.StudentDto;
 
 import java.util.List;
@@ -13,11 +13,11 @@ public interface StudentService {
 
     StudentDto getStudentByID(Long id);
 
-    StudentDto createNewStudent(AddStudentRequestDto addStudentRequestDto);
+    //StudentDto createNewStudent(RegisterRequestDto registerRequestDto);
 
     void deleteStudentById(Long id);
 
-    StudentDto updateStudent(Long id, AddStudentRequestDto addStudentRequestDto);
+    StudentDto updateStudent(Long id, RegisterRequestDto registerRequestDto);
 
     StudentDto updatePartialStudent(Long id, Map<String, Object> update);
 }
