@@ -1,6 +1,5 @@
-package com.Project.Leaning.LearningRESTAPIs.controller;
+package com.Project.Leaning.LearningRESTAPIs.auth;
 
-import com.Project.Leaning.LearningRESTAPIs.auth.AuthService;
 import com.Project.Leaning.LearningRESTAPIs.dto.AuthResponse;
 import com.Project.Leaning.LearningRESTAPIs.dto.LoginRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
