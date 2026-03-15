@@ -25,4 +25,6 @@ public class RegisterRequestDto {
     @NotBlank
     private String password2;
 
+    private Long classId;
+
 }

@@ -4,6 +4,7 @@ import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.StudentDto;
 import com.Project.Leaning.LearningRESTAPIs.entity.Student;
 import com.Project.Leaning.LearningRESTAPIs.enums.Role;
+import com.Project.Leaning.LearningRESTAPIs.repository.ClassRepository;
 import com.Project.Leaning.LearningRESTAPIs.repository.StudentRepository;
 import com.Project.Leaning.LearningRESTAPIs.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -19,78 +20,90 @@ import java.util.Map;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
     private final ModelMapper modelMapper;
 
-    @Override
-    public List<StudentDto> getAllStudents() {
-        List<Student> students = studentRepository.findAll();
-        List<StudentDto> studentDtoList = students.stream().map(student -> modelMapper.map(student, StudentDto.class)).toList();
-
-        //List<StudentDto> studentDtoList = students.stream().map(student -> new StudentDto(student.getId(), student.getName(), student.getEmail())).collect(Collectors.toList());
-
-
-//        using for loop to add student list to student dto
-//        for(Student student : students) {
-//            StudentDto studentDto = new StudentDto(student.getId(), student.getName(),student.getEmail());
-//            studentDtoList.add(studentDto);
-//        }
-
-        return studentDtoList;
+    private Student getStudentOrThrow(Long classId, Long studentId) {
+        return studentRepository
+                .findByIdAndClassEntityId(studentId, classId)
+                .orElseThrow(() -> new RuntimeException("Student not found in this class"));
     }
 
     @Override
-    public StudentDto getStudentByID(Long id) {
-        Student student =  studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Student not found with ID: "+id));
-        return modelMapper.map(student, StudentDto.class);
+    public List<StudentDto> getAllStudents(Long classId) {
+
+        classRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+
+        List<Student> students = studentRepository.findByClassEntityId(classId);
+
+        return students.stream().map(student -> {
+            StudentDto dto = modelMapper.map(student, StudentDto.class);
+            dto.setClassId(student.getClassEntity().getId());
+            dto.setClassName(student.getClassEntity().getClassName());
+            return dto;
+        }).toList();
     }
 
-    //Registering a new student
-//    @Override
-//    public StudentDto createNewStudent(RegisterRequestDto registerRequestDto) {
-//        Student newStudent = modelMapper.map(registerRequestDto, Student.class);
-//
-//        newStudent.setRole(Role.STUDENT);
-//        newStudent.setCreatedAt(LocalDateTime.now());
-//        newStudent.setActive(true);
-//
-//
-//        Student student = studentRepository.save(newStudent);
-//        return modelMapper.map(student, StudentDto.class);
-//    }
 
     @Override
-    public void deleteStudentById(Long id) {
+    public StudentDto getStudentByID(Long classId, Long studentId) {
 
-        if(!studentRepository.existsById(id)){
-            throw new IllegalArgumentException("Student does not exist with ID: "+id);
+        Student student = getStudentOrThrow(classId, studentId);
+
+        StudentDto dto = modelMapper.map(student, StudentDto.class);
+
+        dto.setClassId(student.getClassEntity().getId());
+        dto.setClassName(student.getClassEntity().getClassName());
+
+        return dto;
+    }
+
+    @Override
+    public void deleteStudentById(Long classId, Long studentId) {
+
+        Student student = getStudentOrThrow(classId, studentId);
+
+        studentRepository.delete(student);
+    }
+
+    @Override
+    public StudentDto updateStudent(Long classId, Long studentId, RegisterRequestDto registerRequestDto) {
+        Student student = getStudentOrThrow(classId, studentId);
+
+        student.setName(registerRequestDto.getName());
+        student.setEmail(registerRequestDto.getEmail());
+
+        Student updatedStudent = studentRepository.save(student);
+
+        StudentDto dto = modelMapper.map(updatedStudent, StudentDto.class);
+
+        dto.setClassId(updatedStudent.getClassEntity().getId());
+        dto.setClassName(updatedStudent.getClassEntity().getClassName());
+
+        return dto;
+    }
+
+    @Override
+    public StudentDto updatePartialStudent(Long classId, Long studentId, RegisterRequestDto registerRequestDto) {
+
+        Student student = getStudentOrThrow(classId, studentId);
+
+        if (registerRequestDto.getName() != null) {
+            student.setName(registerRequestDto.getName());
         }
-        studentRepository.deleteById(id);
-    }
 
-    @Override
-    public StudentDto updateStudent(Long id, RegisterRequestDto registerRequestDto) {
-        Student student =  studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Student not found with ID: "+id));
-        modelMapper.map(registerRequestDto, student);
+        if (registerRequestDto.getEmail() != null) {
+            student.setEmail(registerRequestDto.getEmail());
+        }
 
-        student = studentRepository.save(student);
-        return modelMapper.map(student, StudentDto.class);
-    }
+        Student updatedStudent = studentRepository.save(student);
 
-    @Override
-    public StudentDto updatePartialStudent(Long id, Map<String, Object> update) {
-        Student student =  studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Student not found with ID: "+id));
+        StudentDto dto = modelMapper.map(updatedStudent, StudentDto.class);
 
-        update.forEach((field, value) ->{
-            switch (field){
-                case "name": student.setName((String) value);
-                break;
-                case "email": student.setEmail((String) value);
-                break;
-                default:
-                    throw new IllegalArgumentException("field is not valid");
-            }
-        });
-        Student savedstudent = studentRepository.save(student);
-        return modelMapper.map(savedstudent, StudentDto.class);
+        dto.setClassId(updatedStudent.getClassEntity().getId());
+        dto.setClassName(updatedStudent.getClassEntity().getClassName());
+
+        return dto;
     }
 }

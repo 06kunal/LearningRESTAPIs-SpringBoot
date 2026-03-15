@@ -5,6 +5,8 @@ import com.Project.Leaning.LearningRESTAPIs.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,20 +25,28 @@ public class Task {
 
     private String description;
 
-    private Date due_date;
+    private Date dueDate;
 
     @Enumerated(EnumType.STRING)
-    private TaskStatus task_status;
+    private TaskStatus taskStatus;
 
     @Enumerated(EnumType.STRING)
-    private TaskPriority task_priority;
+    private TaskPriority taskPriority;
 
-    private Long student_id;
+    private String createdBy;
 
-    private Long subject_id;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
+    @CreationTimestamp
     private LocalDateTime created_at;
 
+    @UpdateTimestamp
     private LocalDateTime updated_at;
+
+    private Boolean active = true;
+
+    private LocalDateTime completionDate = null;
 
 }

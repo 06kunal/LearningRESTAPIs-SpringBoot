@@ -9,15 +9,15 @@ import java.util.Map;
 
 public interface StudentService {
 
-    List<StudentDto> getAllStudents();
+    List<StudentDto> getAllStudents(Long classId);
 
-    StudentDto getStudentByID(Long id);
+    StudentDto getStudentByID(Long classId, Long studentId);
 
     //StudentDto createNewStudent(RegisterRequestDto registerRequestDto);
 
-    void deleteStudentById(Long id);
+    void deleteStudentById(Long classId, Long id);
 
-    StudentDto updateStudent(Long id, RegisterRequestDto registerRequestDto);
+    StudentDto updateStudent(Long classId, Long id, RegisterRequestDto registerRequestDto);
 
-    StudentDto updatePartialStudent(Long id, Map<String, Object> update);
+    StudentDto updatePartialStudent(Long classId, Long id, RegisterRequestDto registerRequestDto);
 }

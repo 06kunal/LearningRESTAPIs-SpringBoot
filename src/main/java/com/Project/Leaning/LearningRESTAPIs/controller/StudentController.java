@@ -14,39 +14,34 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/students")
+@RequestMapping("/classes/{classId}/students")
 public class StudentController {
 
     private final StudentService studentService;
 
     @GetMapping
-    public ResponseEntity<List<StudentDto>> getAllStudent() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<List<StudentDto>> getAllStudent(@PathVariable Long classId) {
+        return ResponseEntity.ok(studentService.getAllStudents(classId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id) {
-        return ResponseEntity.ok(studentService.getStudentByID(id));
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long classId, @PathVariable Long id) {
+        return ResponseEntity.ok(studentService.getStudentByID(classId, id));
     }
 
-//    @PostMapping
-//    public ResponseEntity<StudentDto> createNewStudent(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
-//    return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createNewStudent(registerRequestDto));
-//    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAStudent(@PathVariable Long id){
-        studentService.deleteStudentById(id);
+    public ResponseEntity<Void> deleteAStudent(@PathVariable Long classId, @PathVariable Long id){
+        studentService.deleteStudentById(classId, id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody @Valid RegisterRequestDto registerRequestDto){
-        return ResponseEntity.ok(studentService.updateStudent(id, registerRequestDto));
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long classId, @PathVariable Long id, @RequestBody @Valid RegisterRequestDto registerRequestDto){
+        return ResponseEntity.ok(studentService.updateStudent(classId, id, registerRequestDto));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<StudentDto> updatePartialStudent(@PathVariable Long id, @RequestBody Map<String, Object> update){
-        return ResponseEntity.ok(studentService.updatePartialStudent(id, update));
+    public ResponseEntity<StudentDto> updatePartialStudent(@PathVariable Long classId, @PathVariable Long id, @RequestBody @Valid RegisterRequestDto registerRequestDto){
+        return ResponseEntity.ok(studentService.updatePartialStudent(classId, id, registerRequestDto));
     }
 }

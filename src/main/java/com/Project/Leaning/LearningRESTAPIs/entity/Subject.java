@@ -1,14 +1,14 @@
 package com.Project.Leaning.LearningRESTAPIs.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -20,16 +20,22 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String SubjectName;
+    private String createdBy;
 
-    private String SubjectDescription;
+    private String subjectName;
 
-    private Date Duedate;
+    private String subjectDescription;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+    private Boolean active = true;
 
-    private Long student_id;
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    @JsonBackReference
+    private ClassEntity classEntity;
 }

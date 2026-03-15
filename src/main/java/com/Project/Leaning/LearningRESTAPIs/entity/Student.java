@@ -2,6 +2,7 @@ package com.Project.Leaning.LearningRESTAPIs.entity;
 
 
 import com.Project.Leaning.LearningRESTAPIs.enums.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,4 +41,9 @@ public class Student {
     private Boolean active;
 
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    @JsonBackReference
+    private ClassEntity classEntity;
 }

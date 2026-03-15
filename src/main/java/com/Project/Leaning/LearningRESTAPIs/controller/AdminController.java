@@ -20,14 +20,11 @@ public class AdminController {
 
     private final AdminService adminService;
 
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/promote")
     public String promoteToAdmin(@RequestBody @Valid AdminRequestDto request){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        //System.out.println("Logged in user: " + auth.getName());
-        //System.out.println("Authorities: " + auth.getAuthorities());
 
         return adminService.promoteToAdmin((request.getEmail()));
     }

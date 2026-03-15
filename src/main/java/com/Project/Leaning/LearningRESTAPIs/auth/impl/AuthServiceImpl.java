@@ -6,8 +6,10 @@ import com.Project.Leaning.LearningRESTAPIs.dto.AuthResponse;
 import com.Project.Leaning.LearningRESTAPIs.dto.LoginRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.RegisterRequestDto;
 import com.Project.Leaning.LearningRESTAPIs.dto.StudentDto;
+import com.Project.Leaning.LearningRESTAPIs.entity.ClassEntity;
 import com.Project.Leaning.LearningRESTAPIs.entity.Student;
 import com.Project.Leaning.LearningRESTAPIs.enums.Role;
+import com.Project.Leaning.LearningRESTAPIs.repository.ClassRepository;
 import com.Project.Leaning.LearningRESTAPIs.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
 
@@ -31,11 +34,24 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(RegisterRequestDto registerRequestDto) {
 
         log.info("Registration started");
-        Student newStudent = modelMapper.map(registerRequestDto, Student.class);
+
+        ClassEntity classEntity = classRepository.findById(registerRequestDto.getClassId())
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+
+        Student newStudent = new Student();
+
+        newStudent.setName(registerRequestDto.getName());
+        newStudent.setEmail(registerRequestDto.getEmail());
+        newStudent.setPassword(registerRequestDto.getPassword());
+        newStudent.setPassword2(registerRequestDto.getPassword2());
+        newStudent.setPhone(registerRequestDto.getPhone());
+        newStudent.setAddress(registerRequestDto.getAddress());
 
         newStudent.setRole(Role.STUDENT);
         newStudent.setCreatedAt(LocalDateTime.now());
         newStudent.setActive(true);
+        newStudent.setClassEntity(classEntity);
+
 
 
         Student student = studentRepository.save(newStudent);

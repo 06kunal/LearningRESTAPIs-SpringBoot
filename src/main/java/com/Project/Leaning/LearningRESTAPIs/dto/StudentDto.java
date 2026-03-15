@@ -26,4 +26,8 @@ public class StudentDto {
     private String role;
     private Boolean active;
     private LocalDateTime createdAt;
+
+    private Long classId;
+    private String className;
+
 }

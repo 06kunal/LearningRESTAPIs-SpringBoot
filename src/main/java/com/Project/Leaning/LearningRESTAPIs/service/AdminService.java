@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AdminService {
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public String promoteToAdmin(String email){
 
